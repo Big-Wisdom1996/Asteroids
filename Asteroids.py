@@ -63,17 +63,16 @@ while True:
     ship.x = (ship.x+ship.xVelocity) % windowWidth
     ship.y = (ship.y+ship.yVelocity) % windowHeight
 
-    #draw ship
-    displaySurf.fill(black) #blank the screen first
     #calculate new points
-
     rotationMatrix[0][0] = cos(ship.angle)
     rotationMatrix[0][1] = -1*sin(ship.angle)
     rotationMatrix[1][0] = sin(ship.angle)
     rotationMatrix[1][1] = cos(ship.angle)
     
     points = rotationMatrix.dot(shipAt0)
-    
+
+    #draw ship
+    displaySurf.fill(black) #blank the screen first
     shipPoints = ((ship.x+points[0][0],ship.y+points[1][0]) , (ship.x+points[0][1],ship.y+points[1][1]) , (ship.x+points[0][2],ship.y+points[1][2]) , (ship.x+points[0][3],ship.y+points[1][3]))
     pygame.draw.polygon(displaySurf, white, shipPoints , 1) #(surface to draw to, color, coordinates, width)
     flamePoints = ((ship.x+points[0][4],ship.y+points[1][4]),(ship.x+points[0][5],ship.y+points[1][5]),(ship.x+points[0][6],ship.y+points[1][6]))
