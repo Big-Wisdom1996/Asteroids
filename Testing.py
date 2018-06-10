@@ -3,8 +3,8 @@ from math import *
 from pygame.locals import *
 
 pygame.init()
-windowWidth = 600
-windowHeight = 400
+windowWidth = 800
+windowHeight = 800
 displaySurf = pygame.display.set_mode((windowWidth,windowHeight))
 pygame.display.set_caption('Asteroids')
 fpsClock = pygame.time.Clock()
@@ -23,12 +23,12 @@ class Ship():
         self.angle = 3*(pi/2) # radians
 
 ship = Ship()
-####
+
 
 #points relative to center of ship, while ship is at angle: 0
 shipAt0 = numpy.array([
-    [25,-25,-15,-25],
-    [0,15,0,-15]])
+    [25,-25,-15,-25,-20,-35,-20],
+    [0,14,0,-14,7,0,-7]])
 
 rotationMatrix = numpy.array([
     [cos(ship.angle),-1*sin(ship.angle)],
@@ -47,11 +47,11 @@ while True:
             pygame.quit()
             sys.exit()
         if event.type == KEYUP:
-            if event.unicode == 'w':
+            if event.key == 119:
                 ship.thrust = 0
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w] == 1:
-        ship.thrust += .1
+        ship.thrust += .3
     if keys[pygame.K_a] == 1:
         ship.angle -= pi/30
     if keys[pygame.K_d] == 1:
@@ -76,6 +76,9 @@ while True:
     
     shipPoints = ((ship.x+points[0][0],ship.y+points[1][0]) , (ship.x+points[0][1],ship.y+points[1][1]) , (ship.x+points[0][2],ship.y+points[1][2]) , (ship.x+points[0][3],ship.y+points[1][3]))
     pygame.draw.polygon(displaySurf, white, shipPoints , 1) #(surface to draw to, color, coordinates, width)
+    flamePoints = ((ship.x+points[0][4],ship.y+points[1][4]),(ship.x+points[0][5],ship.y+points[1][5]),(ship.x+points[0][6],ship.y+points[1][6]))
+    if keys[pygame.K_w] == 1:
+        pygame.draw.lines(displaySurf, white,(0,0), flamePoints, 1) 
 
     pygame.display.update()
     fpsClock.tick()
