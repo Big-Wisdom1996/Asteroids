@@ -28,11 +28,31 @@ class Asteroid():
     def __init__(self):
         self.x = random.randint(0,windowWidth)
         self.y = random.randint(0,windowHeight)
-        self.xVelocity = random.randint(-7,7)
-        self.yVelocity = random.randint(-7,7)
+        self.xVelocity = random.randint(-5,5)
+        self.yVelocity = random.randint(-5,5)
+        self.asteroidTemplate = [     
+            [30,30,0,-30,-10,10],
+            [-8,14,30,0,-60,-60]]
+        self.A = [
+            [0,0,0,0,0,0],
+            [0,0,0,0,0,0]]
+        self.asteroidPoints = 0
+
+    def draw(self):
+        #update game state
+        self.x = (self.x + self.xVelocity) % windowWidth #adjust center of asteroid
+        self.y = (self.y + self.yVelocity) % windowHeight
+        for x in range(0,len(self.asteroidTemplate[0])): #adjust template to actual points
+            self.A[0][x] = self.asteroidTemplate[0][x] + self.x
+            self.A[1][x] = self.asteroidTemplate[1][x] + self.y
+        self.asteroidPoints = ((self.A[0][0],self.A[1][0]),(self.A[0][1],self.A[1][1]),(self.A[0][2],self.A[1][2]),(self.A[0][3],self.A[1][3]),(self.A[0][4],self.A[1][4]),(self.A[0][5],self.A[1][5]))
+        #draw
+        pygame.draw.polygon(displaySurf, white, self.asteroidPoints, 1) #draw asteroid
 
 ship = Ship()
 a1 = Asteroid()
+a2 = Asteroid()
+a3 = Asteroid()
 
 #points relative to center of ship, while ship is at angle: 0
 shipAt0 = numpy.array([     #Points of the ship when it's facing straight east (zero degrees)
@@ -41,17 +61,6 @@ shipAt0 = numpy.array([     #Points of the ship when it's facing straight east (
 rotationMatrix = numpy.array([
     [cos(ship.angle),-1*sin(ship.angle)],
     [sin(ship.angle),cos(ship.angle)]])
-
-asteroidTemplate = numpy.array([     
-    [30,30,0,-30,-10,10],
-    [-8,14,30,0,-60,-60]])
-A = numpy.array([
-    [0,0,0,0,0,0],
-    [0,0,0,0,0,0]])
-
-
-
-
 
 
 
@@ -89,26 +98,18 @@ while True:
     
     points = rotationMatrix.dot(shipAt0)
     shipPoints = ((ship.x+points[0][0],ship.y+points[1][0]) , (ship.x+points[0][1],ship.y+points[1][1]) , (ship.x+points[0][2],ship.y+points[1][2]) , (ship.x+points[0][3],ship.y+points[1][3]))
-    flamePoints = ((ship.x+points[0][4],ship.y+points[1][4]),(ship.x+points[0][5],ship.y+points[1][5]),(ship.x+points[0][6],ship.y+points[1][6]))
-
-    #ASTEROID
-    a1.x = (a1.x + a1.xVelocity) % windowWidth
-    a1.y = (a1.y + a1.yVelocity) % windowHeight
+    flamePoints = ((ship.x+points[0][4],ship.y+points[1][4]),(ship.x+points[0][5],ship.y+points[1][5]),(ship.x+points[0][6],ship.y+points[1][6]))    
     
-    for x in range(0,len(asteroidTemplate[0])):
-        A[0][x] = asteroidTemplate[0][x] + a1.x
-        A[1][x] = asteroidTemplate[1][x] + a1.y
-        
-
-    asteroidPoints = ((A[0][0],A[1][0]),(A[0][1],A[1][1]),(A[0][2],A[1][2]),(A[0][3],A[1][3]),(A[0][4],A[1][4]),(A[0][5],A[1][5]))
-
+ 
     #draw game -----------------------------------------------
     displaySurf.fill(black) #blank the screen first
     pygame.draw.polygon(displaySurf, white, shipPoints , 1) #(surface to draw to, color, coordinates, width)
     if keys[pygame.K_w] == 1:
         pygame.draw.lines(displaySurf, white,(0,0), flamePoints, 1) 
 
-    pygame.draw.polygon(displaySurf, white, asteroidPoints, 1)
+    a1.draw()
+    a2.draw()
+    a3.draw()
     
     pygame.display.update()
     fpsClock.tick()
