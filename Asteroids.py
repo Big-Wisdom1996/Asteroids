@@ -12,6 +12,8 @@ FPS = 5 # set frame rate to 30 per second
 black = (0 , 0 , 0)
 white = (255, 255, 255)
 
+#Initialize game state ----------------------------------------
+
 class Ship():
     def __init__(self):
         self.x = 100 # meters
@@ -23,7 +25,6 @@ class Ship():
         self.angle = 3*(pi/2) # radians
 
 ship = Ship()
-
 
 #points relative to center of ship, while ship is at angle: 0
 shipAt0 = numpy.array([
@@ -41,7 +42,8 @@ shipPoints = ((ship.x+points[0][0],ship.y+points[1][0]) , (ship.x+points[0][1],s
 pygame.draw.polygon(displaySurf, white, shipPoints , 1)
 
 ##### MAIN GAME LOOP ##################
-while True: 
+while True:
+    #keyboard input ------------------------------------------
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
@@ -57,7 +59,8 @@ while True:
     if keys[pygame.K_d] == 1:
         ship.angle += pi/30
 
-    #adjust center of ship
+    #adjust game state --------------------------------------
+    #move ship center
     ship.xVelocity += ship.thrust*cos(ship.angle)/(ship.mass) # calculate X velocity
     ship.yVelocity += ship.thrust*sin(ship.angle)/(ship.mass) # add on the acceleration ( a = f/m)
     ship.x = (ship.x+ship.xVelocity) % windowWidth
@@ -71,7 +74,7 @@ while True:
     
     points = rotationMatrix.dot(shipAt0)
 
-    #draw ship
+    #draw ship -----------------------------------------------
     displaySurf.fill(black) #blank the screen first
     shipPoints = ((ship.x+points[0][0],ship.y+points[1][0]) , (ship.x+points[0][1],ship.y+points[1][1]) , (ship.x+points[0][2],ship.y+points[1][2]) , (ship.x+points[0][3],ship.y+points[1][3]))
     pygame.draw.polygon(displaySurf, white, shipPoints , 1) #(surface to draw to, color, coordinates, width)
