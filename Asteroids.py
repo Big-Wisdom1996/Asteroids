@@ -9,7 +9,7 @@ displaySurf = pygame.display.set_mode((windowWidth,windowHeight))
 pygame.display.set_caption('Asteroids')
 fpsClock = pygame.time.Clock()
 pygame.font.init()
-FPS = 5 # set frame rate to 30 per second
+FPS = 5 # set frame rate to 5 per second
 black = (0 , 0 , 0)
 white = (255, 255, 255)
 idk = (255,255,0)
@@ -19,8 +19,8 @@ impactDistance = 40
 
 class Ship():
     def __init__(self):
-        self.x = 100 # meters
-        self.y = 100 # meters
+        self.x = windowWidth/2 # meters
+        self.y = windowHeight/2 # meters
         self.mass = 100 #kg
         self.xVelocity = 0 # meters per second
         self.yVelocity = 0 # meters per second
