@@ -8,10 +8,12 @@ windowHeight = 800
 displaySurf = pygame.display.set_mode((windowWidth,windowHeight))
 pygame.display.set_caption('Asteroids')
 fpsClock = pygame.time.Clock()
+pygame.font.init()
 FPS = 5 # set frame rate to 30 per second
 black = (0 , 0 , 0)
 white = (255, 255, 255)
 idk = (255,255,0)
+impactDistance = 40
 
 #Initialize game state ----------------------------------------
 
@@ -59,28 +61,9 @@ class Ship():
         if keys[pygame.K_w] == 1:
             pygame.draw.lines(displaySurf, white,(0,0), self.flamePoints, 1) 
 
-    def check(self,checkX, checkY):
-        starboardVector = numpy.array([self.shipPoints[0][0]-self.shipPoints[1][0], self.shipPoints[0][1]-self.shipPoints[1][1], 0])
-        sCheckVector = numpy.array([checkX-self.shipPoints[1][0], checkY-self.shipPoints[1][1], 0])
-        if (numpy.cross(starboardVector,sCheckVector))[2] < 0:
-            starboardIn = True
-        else: starboardIn = False
-
-        portVector = numpy.array([self.shipPoints[0][0]-self.shipPoints[3][0], self.shipPoints[0][1]-self.shipPoints[3][1], 0])
-        pCheckVector = numpy.array([checkX-self.shipPoints[1][0], checkY-self.shipPoints[3][1], 0])
-        if (numpy.cross(portVector,pCheckVector))[2] > 0:
-            portIn = True
-            #print("port")
-        else: portIn = False
-
-        sternVector = numpy.array([self.shipPoints[3][0]-self.shipPoints[1][0], self.shipPoints[3][1]-self.shipPoints[1][1], 0])
-        sternCheckVector = numpy.array([checkX-self.shipPoints[1][0], checkY-self.shipPoints[1][1], 0])
-        if (numpy.cross(sternVector,sternCheckVector))[2] > 0:
-            sternIn = True
-            #print("stern")
-        else: portIn = False
-
-        if starboardIn == True and portIn == True and sternIn == True:
+    def check(self, asteroid):
+        distance = sqrt((asteroid.x - self.x)**2+(asteroid.y-self.y)**2)
+        if distance < impactDistance:
             return True
         else:
             return False
@@ -144,7 +127,7 @@ while True:
     a1.draw() 
     a2.draw()
     a3.draw()
-    if ship.check(a1.x,a1.y) or ship.check(a2.x,a2.y) or ship.check(a3.x,a3.y):
+    if ship.check(a1) or ship.check(a2) or ship.check(a3):
         ship.color = idk
     pygame.display.update()
     fpsClock.tick()
