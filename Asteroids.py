@@ -14,7 +14,7 @@ black = (0 , 0 , 0)
 white = (255, 255, 255)
 idk = (255,255,0)
 impactDistance = 40
-
+gameOver = False
 #Initialize game state ----------------------------------------
 
 class Ship():
@@ -76,7 +76,7 @@ class Asteroid():
         self.yVelocity = random.randint(-5,5)
         self.asteroidTemplate = [     
             [30,30,0,-30,-10,10],
-            [-8,14,30,0,-60,-60]]
+            [2,24,40,10,-45,-45]]
         self.A = [
             [0,0,0,0,0,0],
             [0,0,0,0,0,0]]
@@ -89,9 +89,14 @@ class Asteroid():
         for x in range(0,len(self.asteroidTemplate[0])): #adjust template to actual points
             self.A[0][x] = self.asteroidTemplate[0][x] + self.x
             self.A[1][x] = self.asteroidTemplate[1][x] + self.y
-        self.asteroidPoints = ((self.A[0][0],self.A[1][0]),(self.A[0][1],self.A[1][1]),(self.A[0][2],self.A[1][2]),(self.A[0][3],self.A[1][3]),(self.A[0][4],self.A[1][4]),(self.A[0][5],self.A[1][5]),(self.x,self.y))
+        self.asteroidPoints = ((self.A[0][0],self.A[1][0]),(self.A[0][1],self.A[1][1]),(self.A[0][2],self.A[1][2]),(self.A[0][3],self.A[1][3]),(self.A[0][4],self.A[1][4]),(self.A[0][5],self.A[1][5]))
         #draw
         pygame.draw.polygon(displaySurf, white, self.asteroidPoints, 1) #draw asteroid
+
+font = pygame.font.SysFont(None,50)
+def message_to_screen(msg,color):
+    screen_text = font.render(msg, True, color)
+    displaySurf.blit(screen_text,(windowWidth/2,windowHeight/2))
 
 ship = Ship()
 a1 = Asteroid()
@@ -122,12 +127,16 @@ while True:
    
  
     #draw game -----------------------------------------------
-    displaySurf.fill(black) #blank the screen first
-    ship.draw()
-    a1.draw() 
-    a2.draw()
-    a3.draw()
+    if not gameOver:
+        displaySurf.fill(black) #blank the screen first
+        ship.draw()
+        a1.draw() 
+        a2.draw()
+        a3.draw()
+    else:
+        message_to_screen("You Dead.",white)
     if ship.check(a1) or ship.check(a2) or ship.check(a3):
         ship.color = idk
+        gameOver = True
     pygame.display.update()
     fpsClock.tick()
