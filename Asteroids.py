@@ -93,12 +93,37 @@ class Asteroid():
         #draw
         pygame.draw.polygon(displaySurf, white, self.asteroidPoints, 1) #draw asteroid
 
+class laser():
+    def __init__(self):
+        self.points = [0,0,0,0] # tipX, tipY, tailX, tailY
+        self.Yadd = 0
+        self.Xadd = 0
+
+    def load(self, ship):
+        self.yAdd = 10*sin(ship.angle)
+        self.xAdd = 10*cos(ship.angle)
+        self.points[0] = ship.shipPoints[0][0]+self.xAdd
+        self.points[1] = ship.shipPoints[0][1]+self.yAdd
+        self.points[2] = ship.shipPoints[0][0]
+        self.points[3] = ship.shipPoints[0][1]
+
+    def fire(self):
+        pygame.draw.line(displaySurf,white,(self.points[2],self.points[3]),(self.points[0],self.points[1]),1)
+        self.points[0] += self.xAdd
+        self.points[1] += self.yAdd
+
+        self.points[2] += self.xAdd
+        self.points[3] += self.yAdd
+        
+        
+
 font = pygame.font.SysFont(None,50)
 def message_to_screen(msg,color):
     screen_text = font.render(msg, True, color)
     displaySurf.blit(screen_text,(windowWidth/2,windowHeight/2))
 
 ship = Ship()
+laser = laser()
 a1 = Asteroid()
 a2 = Asteroid()
 a3 = Asteroid()
@@ -116,6 +141,9 @@ while True:
         if event.type == KEYUP:
             if event.key == 119:
                 ship.thrust = 0
+        if event.type == KEYDOWN:
+            if event.key == 32:
+                laser.load(ship)
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w] == 1:
         ship.thrust += .3
@@ -124,8 +152,7 @@ while True:
     if keys[pygame.K_d] == 1:
         ship.angle += pi/30
 
-   
- 
+
     #draw game -----------------------------------------------
     if not gameOver:
         displaySurf.fill(black) #blank the screen first
@@ -133,6 +160,8 @@ while True:
         a1.draw() 
         a2.draw()
         a3.draw()
+        if laser.points[0] != 0:
+            laser.fire()
     else:
         message_to_screen("You Dead.",white)
     if ship.check(a1) or ship.check(a2) or ship.check(a3):
