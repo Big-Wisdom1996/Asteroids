@@ -47,7 +47,12 @@ class Ship:
         if keys[K_w] == 1:
             draw.lines(displaySurf, color,(0,0), self.flamePoints, 1) 
 
-    def check(self, asteroid, asteroidImpactDistance):
+    def check(self, asteroid):
+        if asteroid.shape == 1:
+            asteroidImpactDistance = 40
+        elif asteroid.shape == 2:
+            asteroidImpactDistance = 25
+            
         distance = sqrt((asteroid.x - self.x)**2+(asteroid.y-self.y)**2)
         if distance < asteroidImpactDistance:
             return asteroid

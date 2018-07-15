@@ -1,12 +1,13 @@
 from ship import Ship
 from laser import Laser
-from asteroid import Asteroid
+from asteroid import *
 import pygame, sys
 from math import *
 from pygame.locals import *
 
 pygame.font.init()
 font = pygame.font.SysFont(None,50)
+scoreFont = pygame.font.SysFont(None,20)
 def message_to_screen(msg,color):
     screen_text = font.render(msg, True, color)
     displaySurf.blit(screen_text,(windowWidth/2,windowHeight/2))
@@ -14,8 +15,7 @@ def message_to_screen(msg,color):
 #variables
 windowWidth = 800
 windowHeight = 800
-laserImpactDistance = 40
-asteroidImpactDistance = 40
+score = 0
 gameOver = False
 
 
@@ -73,15 +73,28 @@ while True:
         for asteroid in asteroids:
             asteroid.draw(displaySurf, white, windowWidth, windowHeight)
 
-            laserHit = asteroid.checkLasers(lasers, laserImpactDistance)
+            laserHit = asteroid.checkLasers(lasers)
             if laserHit != None:
                 lasers.remove(laserHit)
                 asteroids.remove(asteroid)
+                
+                if asteroid.shape == 1:
+                    asteroids.append(SmallAsteroid(asteroid.x, asteroid.y, asteroid.xVelocity, asteroid.yVelocity, "left"))
+                    asteroids.append(SmallAsteroid(asteroid.x, asteroid.y, asteroid.xVelocity, asteroid.yVelocity, "right"))
+                    score += 10
+                elif(asteroid.shape == 2):
+                    score += 20
 
-            asteroidHit = ship.check(asteroid, asteroidImpactDistance)
+            asteroidHit = ship.check(asteroid)
             if asteroidHit != None:
                 asteroids.remove(asteroidHit)
                 gameOver = True
+                
+
+        screen_text = scoreFont.render("Score: "+str(score), True, white)
+        displaySurf.blit(screen_text,(windowWidth - 100,40))
+
+            
         
         #--------------------
     else:
