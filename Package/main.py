@@ -1,12 +1,11 @@
-from Package.laser import *
-from Package.asteroid import *
-from Package.button import *
-from Package.ship import *
+from ship import Ship
+from laser import Laser
+from asteroid import *
+from button import Button
 import pygame, sys
 from math import *
 from pygame.locals import *
 
-clock = pygame.time.Clock()
 pygame.font.init()
 font = pygame.font.SysFont(None,50)
 scoreFont = pygame.font.SysFont(None,20)
@@ -17,7 +16,7 @@ windowWidth = 800
 windowHeight = 800
 score = 0
 gameOver = False
-gameState = "MENU"
+gameState = "GAME"
 
 
 #set up window
@@ -41,19 +40,18 @@ start = Button(windowWidth/2, windowHeight/2,"Start")
 while True:
     if gameState == "MENU":
         #----------------------------------MENU-------------------------------
-        displaySurf.fill(black) #blank the screen first
         title = font.render("ASTEROIDS",True,white)
-        displaySurf.blit(title ,(windowWidth/2 - 100,windowHeight/4))
-        
+        displaySurf.blit(title ,(windowWidth/2 - 75,windowHeight/4))
+        '''
         if start.draw(displaySurf) == "pressed":
             gameState = "GAME"
-        
+        '''
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
 
-        clock.tick(60)
+        displaySurf.fill(black) #blank the screen first
         pygame.display.update()
 
 
@@ -131,7 +129,7 @@ while True:
         displaySurf.blit(screen_text,(windowWidth - 100,40))
 
         if gameOver == True:
-            youDead = font.render("You Ded.",True,white)
+            youDead = font.render("You Dead.",True,white)
             displaySurf.blit(youDead ,(windowWidth/2 - 75,windowHeight/4))
             pressed = reset.draw(displaySurf)
             if pressed == "pressed":
@@ -148,7 +146,7 @@ while True:
             
                 
             
-        clock.tick(60)
+
         pygame.display.update()
             #----END-DRAW-------
     
